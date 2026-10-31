@@ -1,0 +1,393 @@
+<title>K비젼 태전점 렌즈 가격 확인</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
+<style>
+/* Phone-first pickup order page: sticky shop bar, horizontal event strip, filter chips, compact product cards with steppers,
+   a bottom cart bar that opens the cart sheet with the promo-applied total. Price check only: no request form (customers skipped the copy-paste step).
+   Same navy / sale red / gift orange as the store's 아이북. */
+:root{
+  --bg:#F3F5F8;--surface:#FFFFFF;--soft:#F7F9FB;--seg:#E8ECF1;--line:#E3E7EC;
+  --ink:#121A26;--muted:#5F6B7A;--faint:#98A2AF;
+  --brand:#14305A;--brand-soft:#E8EEF7;--on-brand:#FFFFFF;
+  --sale:#E2402C;--gift:#B4480C;--gift-soft:#FFF2E8;--ok:#14896B;--ok-soft:#E3F4EE;
+  --kakao:#FEE500;--kakao-ink:#191919;
+  --shadow:0 1px 2px rgba(18,26,38,.05),0 6px 18px rgba(18,26,38,.06);
+  --f-body:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1217;--surface:#171C23;--soft:#1C222A;--seg:#232A33;--line:#2A313A;
+  --ink:#E9EDF2;--muted:#A3ADB9;--faint:#7C8794;
+  --brand:#8DB3EE;--brand-soft:#1D2A3D;--on-brand:#0E1217;
+  --sale:#FF6B58;--gift:#FFA566;--gift-soft:#3A2618;--ok:#4CC9A4;--ok-soft:#15302A;
+  --shadow:none;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1217;--surface:#171C23;--soft:#1C222A;--seg:#232A33;--line:#2A313A;
+  --ink:#E9EDF2;--muted:#A3ADB9;--faint:#7C8794;
+  --brand:#8DB3EE;--brand-soft:#1D2A3D;--on-brand:#0E1217;
+  --sale:#FF6B58;--gift:#FFA566;--gift-soft:#3A2618;--ok:#4CC9A4;--ok-soft:#15302A;
+  --shadow:none;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;word-break:keep-all;-webkit-font-smoothing:antialiased}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.wrap{max-width:720px;margin:0 auto;padding-inline:16px;padding-block:12px 120px;display:grid;gap:16px}
+
+/* shop bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--brand);color:var(--on-brand)}
+.bar-in{max-width:720px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.bar b{display:block;font-size:17px;font-weight:800;letter-spacing:-.01em}
+.bar small{font-size:12px;opacity:.85}
+.bar a{flex:none;font-size:13px;font-weight:700;padding:7px 12px;border-radius:999px;background:color-mix(in srgb,var(--on-brand) 18%,transparent);color:inherit;text-decoration:none}
+
+/* intro */
+.intro{margin:0;padding:12px 14px;border-radius:12px;background:var(--brand-soft);font-size:14px;line-height:1.6}
+.intro b{color:var(--brand)}
+/* old 3-step guide (unused) */
+.how{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0;padding:0;list-style:none}
+.how li{display:grid;gap:2px;padding:10px 12px;border-radius:12px;background:var(--surface);box-shadow:var(--shadow);font-size:12px;color:var(--muted)}
+.how b{font-size:14px;color:var(--ink)}
+.how i{font-style:normal;font-size:11px;font-weight:800;color:var(--brand)}
+
+/* events */
+.evs{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding-inline:16px;scroll-snap-type:x mandatory}
+.evs::-webkit-scrollbar{display:none}
+.ev{flex:0 0 78%;max-width:300px;scroll-snap-align:start;display:grid;gap:4px;align-content:start;padding:14px 16px;border-radius:16px;border:1px solid var(--line);background:var(--surface);text-align:left;box-shadow:var(--shadow);transition:background-color .15s,color .15s,transform .12s}
+.ev b{font-size:16px;font-weight:800;line-height:1.35}
+.ev span{font-size:13px;color:var(--muted)}
+.ev[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.ev[aria-pressed="true"] span{color:var(--on-brand);opacity:.85}
+.ev:active{transform:scale(.985)}
+
+/* search + filters */
+.find{display:grid;gap:10px;padding:12px;border-radius:16px;background:var(--surface);box-shadow:var(--shadow)}
+.search{width:100%;height:44px;border:1px solid var(--line);border-radius:12px;background:var(--soft);padding:0 14px;font-size:16px}
+.row{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.row::-webkit-scrollbar{display:none}
+.chip{flex:none;min-height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:14px;font-weight:700;color:var(--ink);transition:background-color .15s,color .15s,transform .12s}
+.chip small{font-weight:500;opacity:.65;margin-left:2px}
+.chip[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.chip:active{transform:scale(.96)}
+.sum{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--muted);padding-inline:2px}
+.sum button{border:0;background:none;color:var(--brand);font-weight:700;font-size:13px}
+
+/* product cards */
+.grp{display:grid;gap:10px}
+.grp h2{margin:8px 0 0;font-size:19px;font-weight:800;letter-spacing:-.01em;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+.grp h2 small{font-size:13px;font-weight:600;color:var(--faint);margin-left:6px}
+.pc{display:grid;gap:10px;padding:14px;border-radius:16px;background:var(--surface);box-shadow:var(--shadow);border:1px solid color-mix(in srgb,var(--line) 60%,transparent)}
+.pc.has{border-color:var(--brand)}
+.pc-top{display:grid;grid-template-columns:84px minmax(0,1fr);gap:12px;align-items:start}
+.ph{width:84px;aspect-ratio:1;border-radius:12px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;overflow:hidden}
+.ph img{width:100%;height:100%;object-fit:contain}
+.ph span{font-size:11px;color:#98A2AF}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.chips span{font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px;background:var(--seg);color:var(--muted)}
+.pc h3{margin:0;font-size:17px;font-weight:800;line-height:1.35;letter-spacing:-.01em}
+.mk{font-size:12px;color:var(--faint)}
+.promo{margin:0;padding:7px 10px;border-radius:10px;background:var(--gift-soft);color:var(--gift);font-size:13px;font-weight:700}
+.opts{display:grid;border-top:1px solid var(--line)}
+.opt{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.opt:last-child{border-bottom:0;padding-bottom:0}
+.q{font-size:14px;font-weight:700;color:var(--muted);min-width:42px}
+.pr{display:grid;justify-items:end;line-height:1.2}
+.pr s{font-size:12px;color:var(--faint)}
+.pr b{font-size:20px;font-weight:800;color:var(--sale);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.pr b small{font-size:13px;margin-left:1px}
+.pr em{font-style:normal;font-size:11px;font-weight:700;color:var(--sale);opacity:.75}
+.add{height:38px;padding:0 14px;border-radius:10px;border:1.5px solid var(--brand);background:var(--surface);color:var(--brand);font-size:14px;font-weight:800;white-space:nowrap;transition:transform .12s}
+.add:active{transform:scale(.95)}
+.step{display:inline-flex;align-items:center;height:38px;border-radius:10px;background:var(--brand);color:var(--on-brand);overflow:hidden}
+.step button{width:36px;height:100%;border:0;background:none;color:inherit;font-size:20px;line-height:1}
+.step output{min-width:24px;text-align:center;font-weight:800;font-variant-numeric:tabular-nums}
+.empty{padding:40px 16px;text-align:center;color:var(--muted);background:var(--surface);border-radius:16px}
+.foot{font-size:12px;color:var(--faint);text-align:center}
+
+/* bottom cart bar */
+.cbar{position:fixed;left:0;right:0;bottom:0;z-index:40;padding:0 12px calc(12px + env(safe-area-inset-bottom,0px))}
+.cbar button{width:100%;max-width:696px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:12px 14px 12px 16px;border:0;border-radius:16px;background:var(--ink);color:var(--bg);box-shadow:0 10px 30px rgba(18,26,38,.3);text-align:left}
+.cbar .n{display:grid;place-items:center;min-width:26px;height:26px;padding:0 6px;border-radius:999px;background:var(--sale);color:#fff;font-size:14px;font-weight:800}
+.cbar .t{flex:1;display:grid;line-height:1.25}
+.cbar .t small{font-size:12px;opacity:.75}
+.cbar .t b{font-size:18px;font-weight:800;font-variant-numeric:tabular-nums}
+.cbar .go{padding:9px 14px;border-radius:12px;background:var(--bg);color:var(--ink);font-size:14px;font-weight:800}
+
+/* sheets */
+.dim{position:fixed;inset:0;z-index:50;background:rgba(18,26,38,.45)}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:60;max-height:88%;display:flex;flex-direction:column;border-radius:22px 22px 0 0;background:var(--surface);max-width:720px;margin:0 auto;padding-bottom:env(safe-area-inset-bottom,0px)}
+.grab{width:42px;height:5px;border-radius:9px;background:var(--line);margin:10px auto 2px}
+.sh-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 18px 12px;border-bottom:1px solid var(--line)}
+.sh-h h2{margin:0;font-size:20px;font-weight:800}
+.x{border:0;background:var(--seg);border-radius:999px;width:34px;height:34px;font-size:16px;color:var(--muted)}
+.sh-l{overflow:auto;padding:4px 18px;flex:1}
+.ci{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.ci .ph{width:52px;border-radius:10px}
+.ci .k{font-size:12px;font-weight:700;color:var(--muted)}
+.ci .nm{font-size:16px;font-weight:800;line-height:1.3}
+.ci .r{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
+.ci .p{text-align:right;line-height:1.2}.ci .p s{display:block;font-size:12px;color:var(--faint)}.ci .p b{font-size:18px;font-weight:800;color:var(--sale);font-variant-numeric:tabular-nums}
+.ci .note{grid-column:2;display:grid;gap:4px}
+.tag{padding:6px 10px;border-radius:10px;font-size:13px;font-weight:700}
+.tag.gift{background:var(--gift-soft);color:var(--gift)}
+.tag.ok{background:var(--ok-soft);color:var(--ok)}
+.tag.nudge{background:var(--brand-soft);color:var(--brand)}
+.sh-f{padding:14px 18px 16px;display:grid;gap:6px;background:var(--soft);border-top:1px solid var(--line)}
+.ln{display:flex;justify-content:space-between;font-size:14px;color:var(--muted)}
+.ln b{color:var(--sale)}
+.tot{display:flex;justify-content:space-between;align-items:baseline;padding-top:6px}
+.tot span{font-weight:700}.tot b{font-size:28px;font-weight:800;color:var(--sale);font-variant-numeric:tabular-nums}
+.small{font-size:12px;color:var(--muted)}
+.cta{height:52px;border:0;border-radius:14px;background:var(--brand);color:var(--on-brand);font-size:16px;font-weight:800;width:100%}
+.cta:disabled{opacity:.45}
+.link{border:0;background:none;color:var(--muted);font-size:13px;text-decoration:underline;justify-self:center}
+
+/* pickup request */
+.req{position:fixed;inset:0;z-index:70;overflow:auto;background:var(--bg)}
+.req .wrap{padding-block:12px 32px}
+.card{padding:18px;border-radius:18px;background:var(--surface);box-shadow:var(--shadow);display:grid;gap:12px}
+.card h2{margin:0;font-size:19px;font-weight:800}
+.card .sub{margin:-8px 0 0;font-size:13px;color:var(--muted)}
+.it{width:100%;border-collapse:collapse;font-size:14px}
+.it td{padding:9px 0;border-top:1px solid var(--line);vertical-align:top}
+.it td:last-child{text-align:right;font-weight:800;white-space:nowrap;font-variant-numeric:tabular-nums}
+.it td small{display:block;color:var(--gift);font-weight:700;font-size:12px}
+.paybox{display:flex;justify-content:space-between;align-items:baseline;padding-top:10px;border-top:2px solid var(--ink)}
+.paybox b{font-size:26px;font-weight:800;color:var(--sale);font-variant-numeric:tabular-nums}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.fld{display:grid;gap:5px;min-width:0}
+.fld>span{font-size:12px;font-weight:700;color:var(--muted)}
+.fld>span em{font-style:normal;color:var(--sale)}
+.fld input,.fld textarea{width:100%;min-width:0;height:46px;border:1px solid var(--line);border-radius:12px;background:var(--soft);padding:0 12px;font-size:16px}
+.fld textarea{height:auto;min-height:70px;padding:10px 12px;resize:vertical}
+.fld input[aria-invalid="true"]{border-color:var(--sale)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1 1 0;min-width:84px;min-height:42px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-size:14px;font-weight:700;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.err{margin:0;font-size:13px;font-weight:700;color:var(--sale)}
+.notice{margin:0;padding:12px 14px;border-radius:12px;background:var(--brand-soft);font-size:13px;line-height:1.6}
+.sendbox{display:grid;gap:8px}
+.kk{display:flex;align-items:center;justify-content:center;height:54px;border-radius:14px;background:var(--kakao);color:var(--kakao-ink);font-size:16px;font-weight:800;text-decoration:none}
+.btn2{height:50px;border-radius:14px;border:1px solid var(--line);background:var(--surface);font-size:15px;font-weight:800}
+.copybox{width:100%;min-height:180px;border:1px solid var(--line);border-radius:12px;background:var(--soft);padding:10px 12px;font-size:14px;line-height:1.55}
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:90;max-width:calc(100% - 32px);padding:10px 16px;border-radius:12px;background:var(--ink);color:var(--bg);font-size:14px;font-weight:600}
+@media (max-width:380px){.how li{padding:8px 9px;font-size:11px}.how b{font-size:13px}.two{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="bar"><div class="bar-in"><div><b id="shop">K비젼 태전점 콘택트렌즈</b><small>제품 금액 확인 · 행사 적용 금액을 미리 계산해 보세요</small></div></div></header>
+<main class="wrap" id="main">
+  <p class="intro">원하는 렌즈를 담으면 <b>행사가 적용된 금액</b>을 바로 계산해 드려요. 구매와 착용 확인은 매장에서 해요.</p>
+  <div class="evs" id="evs"></div>
+  <section class="find" aria-label="렌즈 찾기">
+    <input class="search" id="q" type="search" placeholder="제품 이름으로 찾기 (예: 오아시스, 마이데이)" aria-label="제품 이름으로 찾기">
+    <div class="row" id="f-use" role="group" aria-label="용도"></div>
+    <div class="row" id="f-cyc" role="group" aria-label="착용 주기"></div>
+    <div class="row" id="f-brand" role="group" aria-label="브랜드"></div>
+  </section>
+  <div class="sum" id="sum"></div>
+  <div id="list" class="grp-list" style="display:grid;gap:18px"></div>
+  <p class="foot" id="foot"></p>
+</main>
+<div class="cbar" id="cbar" hidden><button type="button" data-act="open-cart"><span class="n" id="cb-n">0</span><span class="t"><small id="cb-s"></small><b id="cb-t"></b></span><span class="go">금액 보기 →</span></button></div>
+
+<div class="dim" id="dim" hidden data-act="close"></div>
+<section class="sheet" id="cart" hidden role="dialog" aria-modal="true" aria-labelledby="cart-h">
+  <div class="grab"></div>
+  <div class="sh-h"><h2 id="cart-h">장바구니</h2><button type="button" class="x" data-act="close" aria-label="닫기">✕</button></div>
+  <div class="sh-l" id="cart-l"></div>
+  <div class="sh-f" id="cart-f"></div>
+</section>
+
+<script>
+(function(){
+var D={"shop":"K비젼 태전점","month":"2026년 11월","version":"Ver.6.1","updated":"2026-10-31","kakao":"http://pf.kakao.com/_AhxmQG/chat","footer":"도수와 옵션에 따라 가격이 달라질 수 있습니다. 자세한 내용은 매장 직원에게 문의해 주세요.","events":[{"title":"쿠퍼 멤버십 더블 스탬프","text":"클래리티 · 마이데이 · 바이오피니티 소용량 3팩 구매 시 1팩, 90P 1팩 구매 시 30P 증정 · 마이데이 멀티포컬 신규 고객 소용량 1+1"},{"title":"아큐브 증정 혜택","text":"원데이 90P 2팩 구매 시 같은 제품 30P 증정 (오아시스는 네이버페이 2만원 추가) · Max 난시 · MF 난시 30P 2+1 · 모이스트 멀티포컬 30P 3+1 · 2주/한달용 6P 3+1"},{"title":"바슈롬 울트라 (앱 쿠폰)","text":"바슈롬 앱에서 쿠폰을 받으면 울트라 원데이 30P 3+1 · 90P 90+30, 울트라 한달용 3+1"},{"title":"신규 고객 1+1","text":"아큐브 소용량 1+1 · 바슈롬 30P 1+1 (내츄렐 · 소프렌 제외, 앱 쿠폰)"}],"products":[{"brand":"아큐브","name":"모이스트 근시","promo":"90P 2팩 구매 시 30P 증정","g":"원데이 투명","maker":"","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"원데이","cycLabel":"원데이","pic":"img/ct15.jpg","opts":[{"qty":"30","list":"43000","sale":"26000","pic":"img/ct15.jpg"},{"qty":"90","list":"118000","sale":"68000","pic":"img/ct14.jpg"}]},{"brand":"아큐브","name":"모이스트 난시","promo":"90P 2팩 구매 시 30P 증정","g":"원데이 투명","maker":"","color":false,"astig":true,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np15.jpg","opts":[{"qty":"30","list":"54000","sale":"32000","pic":"img/np15.jpg"},{"qty":"90","list":"148000","sale":"86000","pic":"img/np16.jpg"}]},{"brand":"아큐브","name":"모이스트 멀티포컬","promo":"30P 3팩 구매 시 30P 1팩 증정","g":"원데이 투명","maker":"","color":false,"astig":false,"multi":true,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np17.jpg","opts":[{"qty":"30","list":"64000","sale":"35000","pic":"img/np17.jpg"}]},{"brand":"아큐브","name":"오아시스 근시","promo":"90P 2팩 구매 시 30P 증정 · 네이버페이 2만원 증정","g":"원데이 투명","maker":"","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"원데이","cycLabel":"원데이","pic":"img/ct17.jpg","opts":[{"qty":"30","list":"65000","sale":"36000","pic":"img/ct17.jpg"},{"qty":"90","list":"174000","sale":"95000","pic":"img/ct2.jpg"}]},{"brand":"아큐브","name":"오아시스 난시","promo":"90P 2팩 구매 시 30P 증정 · 네이버페이 2만원 증정","g":"원데이 투명","maker":"","color":false,"astig":true,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/ct3.jpg","opts":[{"qty":"30","list":"78000","sale":"41000","pic":"img/ct3.jpg"},{"qty":"90","list":"194000","sale":"105000","pic":null}]},{"brand":"아큐브","name":"Max 근시","promo":"90P 2팩 구매 시 30P 증정","g":"원데이 투명","maker":"","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"원데이","cycLabel":"원데이","pic":"img/np41.jpg","opts":[{"qty":"30","list":"74000","sale":"42000","pic":"img/np41.jpg"},{"qty":"90","list":"193000","sale":"108000","pic":"img/np42.jpg"}]},{"brand":"아큐브","name":"Max 난시","promo":"30P 2팩 구매 시 30P 증정","g":"원데이 투명","maker":"","color":false,"astig":true,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np43.jpg","opts":[{"qty":"30","list":"85000","sale":"51000","pic":"img/np43.jpg"}]},{"brand":"아큐브","name":"Max 멀티포컬","promo":"90P 2팩 구매 시 30P 증정","g":"원데이 투명","maker":"","color":false,"astig":false,"multi":true,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np44.jpg","opts":[{"qty":"30","list":"79000","sale":"47000","pic":"img/np44.jpg"},{"qty":"90","list":"210000","sale":"135000","pic":"img/np45.jpg"}]},{"brand":"아큐브","name":"오아시스 Max 멀티포컬 난시","promo":"30P 2팩 구매 시 30P 증정","g":"원데이 투명","maker":"","color":false,"astig":true,"multi":true,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np46.jpg","opts":[{"qty":"30","list":"89000","sale":"52000","pic":"img/np46.jpg"}]},{"brand":"아큐브","name":"오아시스 2주용 근시","promo":"3팩 구매 시 1팩 증정 (6P · 12P 모두)","g":"관리용 투명","maker":"","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"2주·한달","cycLabel":"2주용","pic":"img/np39.jpg","opts":[{"qty":"6","list":"51000","sale":"25000","pic":"img/np39.jpg"},{"qty":"12","list":"92000","sale":"46000","pic":"img/np38.jpg"}]},{"brand":"아큐브","name":"오아시스 2주용 난시","promo":"6P 3팩 구매 시 6P 1팩 증정","g":"관리용 투명","maker":"","color":false,"astig":true,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"2주용","pic":"img/np40.jpg","opts":[{"qty":"6","list":"69000","sale":"30000","pic":"img/np40.jpg"}]},{"brand":"아큐브","name":"비타 한달용 근시","promo":"6P 3팩 구매 시 6P 1팩 증정","g":"관리용 투명","maker":"","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/np36.jpg","opts":[{"qty":"6","list":"70000","sale":"32000","pic":"img/np36.jpg"}]},{"brand":"아큐브","name":"비타 한달용 난시","promo":"6P 3팩 구매 시 6P 1팩 증정","g":"관리용 투명","maker":"","color":false,"astig":true,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/np37.jpg","opts":[{"qty":"6","list":"113000","sale":"42000","pic":"img/np37.jpg"}]},{"brand":"아큐브","name":"디파인 래디언트 브라이트","promo":"90P 2팩 구매 시 30P 증정","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np3.jpg","opts":[{"qty":"30","list":"68000","sale":"41000","pic":"img/np3.jpg"},{"qty":"90","list":"172000","sale":"100000","pic":"img/np4.jpg"}]},{"brand":"아큐브","name":"디파인 래디언트 스윗","promo":"90P 2팩 구매 시 30P 증정","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np7.jpg","opts":[{"qty":"30","list":"68000","sale":"41000","pic":"img/np7.jpg"},{"qty":"90","list":"172000","sale":"100000","pic":"img/np8.jpg"}]},{"brand":"아큐브","name":"디파인 래디언트 시크","promo":"90P 2팩 구매 시 30P 증정","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np9.jpg","opts":[{"qty":"30","list":"68000","sale":"41000","pic":"img/np9.jpg"},{"qty":"90","list":"172000","sale":"100000","pic":"img/np10.jpg"}]},{"brand":"아큐브","name":"디파인 래디언트 차밍","promo":"90P 2팩 구매 시 30P 증정","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np13.jpg","opts":[{"qty":"30","list":"68000","sale":"41000","pic":"img/np13.jpg"},{"qty":"90","list":"172000","sale":"100000","pic":"img/np14.jpg"}]},{"brand":"아큐브","name":"디파인 내츄럴 샤인","promo":"90P 2팩 구매 시 30P 증정","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np1.jpg","opts":[{"qty":"30","list":"68000","sale":"41000","pic":"img/np1.jpg"},{"qty":"90","list":"172000","sale":"100000","pic":"img/np2.jpg"}]},{"brand":"아큐브","name":"디파인 액센트","promo":"90P 2팩 구매 시 30P 증정","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np11.jpg","opts":[{"qty":"30","list":"68000","sale":"41000","pic":"img/np11.jpg"},{"qty":"90","list":"172000","sale":"100000","pic":"img/np12.jpg"}]},{"brand":"아큐브","name":"디파인 비비드","promo":"90P 2팩 구매 시 30P 증정","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np5.jpg","opts":[{"qty":"30","list":"68000","sale":"41000","pic":"img/np5.jpg"},{"qty":"90","list":"172000","sale":"100000","pic":"img/np6.jpg"}]},{"brand":"바슈롬","name":"소프렌 근시","promo":"","g":"원데이 투명","maker":"","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"원데이","cycLabel":"원데이","pic":"img/bx37.jpg","opts":[{"qty":"30","list":"37000","sale":"19000","pic":"img/bx37.jpg"},{"qty":"90","list":"110000","sale":"77000","pic":"img/bx38.jpg"}]},{"brand":"바슈롬","name":"소프렌 난시","promo":"","g":"원데이 투명","maker":"","color":false,"astig":true,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/bx39.jpg","opts":[{"qty":"30","list":"49000","sale":"35000","pic":"img/bx39.jpg"}]},{"brand":"바슈롬","name":"바이오트루 근시","promo":"","g":"원데이 투명","maker":"","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"원데이","cycLabel":"원데이","pic":"img/ct16.jpg","opts":[{"qty":"30","list":"52000","sale":"27000","pic":"img/ct16.jpg"},{"qty":"90","list":"145000","sale":"70000","pic":null}]},{"brand":"바슈롬","name":"바이오트루 난시","promo":"","g":"원데이 투명","maker":"","color":false,"astig":true,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/bx43.jpg","opts":[{"qty":"30","list":"61000","sale":"33000","pic":"img/bx43.jpg"}]},{"brand":"바슈롬","name":"바이오트루 멀티포컬","promo":"","g":"원데이 투명","maker":"","color":false,"astig":false,"multi":true,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/bx36.jpg","opts":[{"qty":"30","list":"67000","sale":"31000","pic":"img/bx36.jpg"}]},{"brand":"바슈롬","name":"울트라 원데이","promo":"바슈롬 앱 쿠폰 행사: 30P 3+1 · 90P 90+30","g":"원데이 투명","maker":"","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"원데이","cycLabel":"원데이","pic":"img/ct5.jpg","opts":[{"qty":"30","list":"67000","sale":"38000","pic":"img/ct5.jpg"},{"qty":"90","list":"180000","sale":"95000","pic":"img/ct4.jpg"}]},{"brand":"바슈롬","name":"울트라 근시","promo":"바슈롬 앱 쿠폰 행사: 3+1","g":"한달용 투명","maker":"","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/bx40.jpg","opts":[{"qty":"6","list":"69000","sale":"34500","pic":"img/bx40.jpg"}]},{"brand":"바슈롬","name":"울트라 난시","promo":"바슈롬 앱 쿠폰 행사: 3+1","g":"한달용 투명","maker":"","color":false,"astig":true,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/bx41.jpg","opts":[{"qty":"6","list":"96000","sale":"41000","pic":"img/bx41.jpg"}]},{"brand":"바슈롬","name":"울트라 멀티포컬","promo":"바슈롬 앱 쿠폰 행사: 3+1","g":"한달용 투명","maker":"","color":false,"astig":false,"multi":true,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/bx42.jpg","opts":[{"qty":"6","list":"125000","sale":"60000","pic":"img/bx42.jpg"}]},{"brand":"바슈롬","name":"레이셀 뮤즈초코","promo":"","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np21.jpg","opts":[{"qty":"30","list":"59000","sale":"35000","pic":"img/np21.jpg"}]},{"brand":"바슈롬","name":"레이셀 이터널블랙","promo":"","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np29.jpg","opts":[{"qty":"30","list":"59000","sale":"35000","pic":"img/np29.jpg"}]},{"brand":"바슈롬","name":"레이셀 스팟라이트브라운","promo":"","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np26.jpg","opts":[{"qty":"30","list":"59000","sale":"35000","pic":"img/np26.jpg"}]},{"brand":"바슈롬","name":"레이셀 루미너스그레이","promo":"","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np18.jpg","opts":[{"qty":"30","list":"59000","sale":"35000","pic":"img/np18.jpg"}]},{"brand":"바슈롬","name":"레이셀 오로라브라운","promo":"","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np27.jpg","opts":[{"qty":"30","list":"59000","sale":"35000","pic":"img/np27.jpg"}]},{"brand":"바슈롬","name":"레이셀 오로라블랙","promo":"","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np28.jpg","opts":[{"qty":"30","list":"59000","sale":"35000","pic":"img/np28.jpg"}]},{"brand":"바슈롬","name":"레이셀 메리모카","promo":"","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np19.jpg","opts":[{"qty":"30","list":"59000","sale":"35000","pic":"img/np19.jpg"}]},{"brand":"바슈롬","name":"레이셀 프리덤허니","promo":"","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np32.jpg","opts":[{"qty":"30","list":"59000","sale":"35000","pic":"img/np32.jpg"}]},{"brand":"바슈롬","name":"레이셀 밤비브라운","promo":"","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np23.jpg","opts":[{"qty":"30","list":"59000","sale":"35000","pic":"img/np23.jpg"}]},{"brand":"바슈롬","name":"레이셀 베이비브라운","promo":"","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/rb1.jpg","opts":[{"qty":"30","list":"59000","sale":"35000","pic":"img/rb1.jpg"}]},{"brand":"바슈롬","name":"레이셀 크리스탈브라운","promo":"","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np30.jpg","opts":[{"qty":"30","list":"59000","sale":"35000","pic":"img/np30.jpg"}]},{"brand":"바슈롬","name":"레이셀 트윙클브라운","promo":"","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np31.jpg","opts":[{"qty":"30","list":"59000","sale":"35000","pic":"img/np31.jpg"}]},{"brand":"바슈롬","name":"레이셀 스파클링블랙","promo":"","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np25.jpg","opts":[{"qty":"30","list":"59000","sale":"35000","pic":"img/np25.jpg"}]},{"brand":"바슈롬","name":"레이셀 멜로우브라운","promo":"","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np20.jpg","opts":[{"qty":"30","list":"59000","sale":"35000","pic":"img/np20.jpg"}]},{"brand":"바슈롬","name":"레이셀 디어브라운","promo":"","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/rb2.jpg","opts":[{"qty":"30","list":"59000","sale":"35000","pic":"img/rb2.jpg"}]},{"brand":"바슈롬","name":"레이셀 쉬머링골드","promo":"","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np24.jpg","opts":[{"qty":"30","list":"59000","sale":"35000","pic":"img/np24.jpg"}]},{"brand":"바슈롬","name":"레이셀 미스틱그레이","promo":"","g":"원데이 컬러","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np22.jpg","opts":[{"qty":"30","list":"59000","sale":"35000","pic":"img/np22.jpg"}]},{"brand":"쿠퍼비젼","name":"프로클리어 근시","promo":"","g":"원데이 투명","maker":"","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"원데이","cycLabel":"원데이","pic":"img/np51.jpg","opts":[{"qty":"30","list":"34000","sale":"20000","pic":"img/np51.jpg"},{"qty":"90","list":"79000","sale":"45000","pic":"img/np52.jpg"}]},{"brand":"쿠퍼비젼","name":"프로클리어 멀티포컬","promo":"","g":"원데이 투명","maker":"","color":false,"astig":false,"multi":true,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np53.jpg","opts":[{"qty":"30","list":"49000","sale":"30000","pic":"img/np53.jpg"}]},{"brand":"쿠퍼비젼","name":"클래리티 근시","promo":"30P 3+1 (3팩 구매 시 1팩 증정) · 90P 1팩 구매 시 30P 증정","g":"원데이 투명","maker":"","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"원데이","cycLabel":"원데이","pic":"img/ct9.jpg","opts":[{"qty":"30","list":"46000","sale":"23000","pic":"img/ct9.jpg"},{"qty":"90","list":"115000","sale":"58000","pic":"img/ct8.jpg"}]},{"brand":"쿠퍼비젼","name":"클래리티 난시","promo":"30P 3+1 (3팩 구매 시 1팩 증정) · 90P 1팩 구매 시 30P 증정","g":"원데이 투명","maker":"","color":false,"astig":true,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np47.jpg","opts":[{"qty":"30","list":"54000","sale":"29000","pic":"img/np47.jpg"},{"qty":"90","list":"150000","sale":"79000","pic":"img/np48.jpg"}]},{"brand":"쿠퍼비젼","name":"마이데이 근시","promo":"30P 3+1 (3팩 구매 시 1팩 증정) · 90P 1팩 구매 시 30P 증정","g":"원데이 투명","maker":"","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"원데이","cycLabel":"원데이","pic":"img/cv1.jpg","opts":[{"qty":"30","list":"55000","sale":"34000","pic":"img/cv1.jpg"},{"qty":"90","list":"140000","sale":"90000","pic":"img/ct12.jpg"}]},{"brand":"쿠퍼비젼","name":"마이데이 난시","promo":"30P 3+1 (3팩 구매 시 1팩 증정) · 90P 1팩 구매 시 30P 증정","g":"원데이 투명","maker":"","color":false,"astig":true,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/ct13.jpg","opts":[{"qty":"30","list":"72000","sale":"39000","pic":"img/ct13.jpg"},{"qty":"90","list":"190000","sale":"103000","pic":null}]},{"brand":"쿠퍼비젼","name":"바이오피니티 근시","promo":"3+1 (3팩 구매 시 1팩 증정)","g":"한달용 투명","maker":"","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/np33.jpg","opts":[{"qty":"6","list":"67000","sale":"35000","pic":"img/np33.jpg"}]},{"brand":"쿠퍼비젼","name":"바이오피니티 난시","promo":"3+1 (3팩 구매 시 1팩 증정)","g":"한달용 투명","maker":"","color":false,"astig":true,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/np34.jpg","opts":[{"qty":"6","list":"117000","sale":"43000","pic":"img/np34.jpg"}]},{"brand":"쿠퍼비젼","name":"바이오피니티 XR","promo":"3+1 (3팩 구매 시 1팩 증정)","g":"한달용 투명","maker":"","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/np35.jpg","opts":[{"qty":"6","list":"67000","sale":"47000","pic":"img/np35.jpg"}]},{"brand":"알콘","name":"토탈원 근시","promo":"","g":"원데이 투명","maker":"","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"원데이","cycLabel":"원데이","pic":"img/ct11.jpg","opts":[{"qty":"30","list":"71000","sale":"42000","pic":"img/ct11.jpg"},{"qty":"90","list":"189000","sale":"105000","pic":"img/ct10.jpg"}]},{"brand":"알콘","name":"토탈원 난시","promo":"","g":"원데이 투명","maker":"","color":false,"astig":true,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/np50.jpg","opts":[{"qty":"30","list":"77000","sale":"52000","pic":"img/np50.jpg"},{"qty":"90","list":"180000","sale":"135000","pic":"img/np49.jpg"}]},{"brand":"알콘","name":"토탈원 멀티포컬","promo":"","g":"원데이 투명","maker":"","color":false,"astig":false,"multi":true,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/al1.jpg","opts":[{"qty":"30","list":"75000","sale":"55000","pic":"img/al1.jpg"}]},{"brand":"알콘","name":"나이트앤데이","promo":"","g":"한달용 투명","maker":"","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/al4.jpg","opts":[{"qty":"6","list":"101000","sale":"44000","pic":"img/al4.jpg"}]},{"brand":"알콘","name":"에어옵틱스 하이드라 멀티포컬","promo":"","g":"한달용 투명","maker":"","color":false,"astig":false,"multi":true,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/al5.jpg","opts":[{"qty":"6","list":"115000","sale":"64000","pic":"img/al5.jpg"}]},{"brand":"알콘","name":"토탈원30 근시","promo":"","g":"한달용 투명","maker":"","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/al2.jpg","opts":[{"qty":"6","list":"90000","sale":"49000","pic":"img/al2.jpg"}]},{"brand":"알콘","name":"토탈원30 난시","promo":"","g":"한달용 투명","maker":"","color":false,"astig":true,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/al3.jpg","opts":[{"qty":"6","list":"135000","sale":"59000","pic":"img/al3.jpg"}]},{"brand":"인터로조","name":"클라렌 원데이","promo":"","g":"","maker":"","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"원데이","cycLabel":"원데이","pic":"img/ct7.jpg","opts":[{"qty":"30","list":"30000","sale":"21000","pic":"img/ct7.jpg"},{"qty":"80","list":"76000","sale":"54000","pic":"img/ct6.jpg"}]},{"brand":"인터로조","name":"O2O2 원데이 투명","promo":"","g":"","maker":"","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"원데이","cycLabel":"원데이","pic":"img/io1.jpg","opts":[{"qty":"40","list":"47000","sale":"33000","pic":"img/io1.jpg"}]},{"brand":"인터로조","name":"아이리스 원데이 소울 브라운","promo":"","g":"","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/io2.jpg","opts":[{"qty":"40","list":"65000","sale":"42000","pic":"img/io2.jpg"},{"qty":"90","list":"149000","sale":"94000","pic":"img/io2.jpg"}]},{"brand":"인터로조","name":"아이리스 원데이 재즈 블랙","promo":"","g":"","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/io3.jpg","opts":[{"qty":"40","list":"65000","sale":"42000","pic":"img/io3.jpg"}]},{"brand":"인터로조","name":"아이리스 원데이 라틴","promo":"","g":"","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/io4.jpg","opts":[{"qty":"40","list":"65000","sale":"42000","pic":"img/io4.jpg"}]},{"brand":"인터로조","name":"아이리스 원데이 랩소디","promo":"","g":"","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/io5.jpg","opts":[{"qty":"40","list":"65000","sale":"42000","pic":"img/io5.jpg"},{"qty":"90","list":"149000","sale":"94000","pic":"img/io5.jpg"}]},{"brand":"인터로조","name":"아이리스 원데이 수지 그레이","promo":"","g":"","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/io6.jpg","opts":[{"qty":"30","list":"55000","sale":"28000","pic":"img/io6.jpg"},{"qty":"90","list":"154000","sale":"123000","pic":"img/io6.jpg"}]},{"brand":"인터로조","name":"아이리스 원데이 수지 브라운","promo":"","g":"","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/io7.jpg","opts":[{"qty":"30","list":"55000","sale":"28000","pic":"img/io7.jpg"},{"qty":"90","list":"154000","sale":"123000","pic":"img/io7.jpg"}]},{"brand":"인터로조","name":"알리샤브라운 근시","promo":"","g":"","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/io8.jpg","opts":[{"qty":"30","list":"55000","sale":"38000","pic":"img/io8.jpg"}]},{"brand":"인터로조","name":"알리샤브라운 난시","promo":"","g":"","maker":"","color":true,"astig":true,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/io9.jpg","opts":[{"qty":"30","list":"69000","sale":"48000","pic":"img/io9.jpg"}]},{"brand":"인터로조","name":"헤일로 토릭 브라운","promo":"","g":"","maker":"","color":true,"astig":true,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/io10.jpg","opts":[{"qty":"30","list":"69000","sale":"50000","pic":"img/io10.jpg"}]},{"brand":"인터로조","name":"헤일로 토릭 그레이","promo":"","g":"","maker":"","color":true,"astig":true,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/io11.jpg","opts":[{"qty":"30","list":"69000","sale":"50000","pic":"img/io11.jpg"}]},{"brand":"인터로조","name":"O2O2 컬러 원데이 세피아 초코","promo":"","g":"","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/io12.jpg","opts":[{"qty":"30","list":"65000","sale":"35000","pic":"img/io12.jpg"}]},{"brand":"인터로조","name":"O2O2 컬러 원데이 애쉬 그레이","promo":"","g":"","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/io13.jpg","opts":[{"qty":"30","list":"65000","sale":"35000","pic":"img/io13.jpg"}]},{"brand":"인터로조","name":"O2O2 컬러 원데이 애쉬 브라운","promo":"","g":"","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/io14.jpg","opts":[{"qty":"30","list":"65000","sale":"35000","pic":"img/io14.jpg"}]},{"brand":"인터로조","name":"O2O2 컬러 원데이 블렌딩 로즈","promo":"","g":"","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/io15.jpg","opts":[{"qty":"30","list":"65000","sale":"35000","pic":"img/io15.jpg"}]},{"brand":"인터로조","name":"O2O2 컬러 원데이 블렌딩 헤이즐","promo":"","g":"","maker":"","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/io16.jpg","opts":[{"qty":"30","list":"65000","sale":"35000","pic":"img/io16.jpg"}]},{"brand":"인터로조","name":"O2O2 컬러 토릭 애쉬 브라운","promo":"","g":"","maker":"","color":true,"astig":true,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/io17.jpg","opts":[{"qty":"30","list":"79000","sale":"38000","pic":"img/io17.jpg"}]},{"brand":"인터로조","name":"O2O2 컬러 토릭 세피아 초코","promo":"","g":"","maker":"","color":true,"astig":true,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/io18.jpg","opts":[{"qty":"30","list":"79000","sale":"38000","pic":"img/io18.jpg"}]},{"brand":"카밀라","name":"카밀라 2데이 투명","promo":"","g":"","maker":"디케이 2day","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"원데이","cycLabel":"2데이","pic":"img/cm1.jpg","opts":[{"qty":"20","list":"34000","sale":"17000","pic":"img/cm1.jpg"}]},{"brand":"카밀라","name":"카밀라 투명","promo":"","g":"","maker":"디케이 한달용","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/cm2.jpg","opts":[{"qty":"2","list":"15000","sale":"3900","pic":"img/cm2.jpg"}]},{"brand":"카밀라","name":"카밀라 브라운","promo":"","g":"","maker":"디케이 한달용","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/cm3.jpg","opts":[{"qty":"2","list":"15000","sale":"3900","pic":"img/cm3.jpg"}]},{"brand":"카밀라","name":"카밀라 그레이","promo":"","g":"","maker":"디케이 한달용","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/cm4.jpg","opts":[{"qty":"2","list":"15000","sale":"3900","pic":"img/cm4.jpg"}]},{"brand":"카밀라","name":"윙블리 블루","promo":"","g":"","maker":"디케이 한달용","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/cm5.jpg","opts":[{"qty":"2","list":"15000","sale":"3900","pic":"img/cm5.jpg"}]},{"brand":"카밀라","name":"윙블리 브라운","promo":"","g":"","maker":"디케이 한달용","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/cm6.jpg","opts":[{"qty":"2","list":"15000","sale":"3900","pic":"img/cm6.jpg"}]},{"brand":"카밀라","name":"윙블리 그레이","promo":"","g":"","maker":"디케이 한달용","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/cm7.jpg","opts":[{"qty":"2","list":"15000","sale":"3900","pic":"img/cm7.jpg"}]},{"brand":"렌즈그라피","name":"샤이링 원먼스 브라운","promo":"","g":"","maker":"렌즈그라피","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/lg49.jpg","opts":[{"qty":"1팩 (2P)","list":"10000","sale":"10000","pic":"img/lg49.jpg"},{"qty":"1+1 (4P)","list":"20000","sale":"18000","pic":"img/lg49.jpg"}]},{"brand":"렌즈그라피","name":"샤이링 원먼스 그레이","promo":"","g":"","maker":"렌즈그라피","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/lg48.jpg","opts":[{"qty":"1팩 (2P)","list":"10000","sale":"10000","pic":"img/lg48.jpg"},{"qty":"1+1 (4P)","list":"20000","sale":"18000","pic":"img/lg48.jpg"}]},{"brand":"렌즈그라피","name":"블러매직 원먼스 브라운","promo":"","g":"","maker":"렌즈그라피","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/lgbb.jpg","opts":[{"qty":"1팩 (2P)","list":"10000","sale":"10000","pic":"img/lgbb.jpg"},{"qty":"1+1 (4P)","list":"20000","sale":"18000","pic":"img/lgbb.jpg"}]},{"brand":"렌즈그라피","name":"블러매직 원먼스 베이지","promo":"","g":"","maker":"렌즈그라피","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/lg50.jpg","opts":[{"qty":"1팩 (2P)","list":"10000","sale":"10000","pic":"img/lg50.jpg"},{"qty":"1+1 (4P)","list":"20000","sale":"18000","pic":"img/lg50.jpg"}]},{"brand":"렌즈그라피","name":"스윗서클 원먼스 브라운","promo":"","g":"","maker":"렌즈그라피","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/lgsb.jpg","opts":[{"qty":"1팩 (2P)","list":"10000","sale":"10000","pic":"img/lgsb.jpg"},{"qty":"1+1 (4P)","list":"20000","sale":"18000","pic":"img/lgsb.jpg"}]},{"brand":"렌즈그라피","name":"스윗서클 원먼스 그레이","promo":"","g":"","maker":"렌즈그라피","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/lg46.jpg","opts":[{"qty":"1팩 (2P)","list":"10000","sale":"10000","pic":"img/lg46.jpg"},{"qty":"1+1 (4P)","list":"20000","sale":"18000","pic":"img/lg46.jpg"}]},{"brand":"렌즈그라피","name":"스윗서클 원먼스 초코","promo":"","g":"","maker":"렌즈그라피","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/lg47.jpg","opts":[{"qty":"1팩 (2P)","list":"10000","sale":"10000","pic":"img/lg47.jpg"},{"qty":"1+1 (4P)","list":"20000","sale":"18000","pic":"img/lg47.jpg"}]},{"brand":"렌즈그라피","name":"샤이링 원데이 브라운","promo":"","g":"","maker":"렌즈그라피","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/lg49.jpg","opts":[{"qty":"1팩 (10P)","list":"12000","sale":"12000","pic":"img/lg49.jpg"},{"qty":"1+1 (20P)","list":"24000","sale":"20000","pic":"img/lg49.jpg"}]},{"brand":"렌즈그라피","name":"샤이링 원데이 그레이","promo":"","g":"","maker":"렌즈그라피","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/lg48.jpg","opts":[{"qty":"1팩 (10P)","list":"12000","sale":"12000","pic":"img/lg48.jpg"},{"qty":"1+1 (20P)","list":"24000","sale":"20000","pic":"img/lg48.jpg"}]},{"brand":"렌즈그라피","name":"블러매직 원데이 브라운","promo":"","g":"","maker":"렌즈그라피","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/lgbb.jpg","opts":[{"qty":"1팩 (10P)","list":"12000","sale":"12000","pic":"img/lgbb.jpg"},{"qty":"1+1 (20P)","list":"24000","sale":"20000","pic":"img/lgbb.jpg"}]},{"brand":"렌즈그라피","name":"블러매직 원데이 베이지","promo":"","g":"","maker":"렌즈그라피","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/lg50.jpg","opts":[{"qty":"1팩 (10P)","list":"12000","sale":"12000","pic":"img/lg50.jpg"},{"qty":"1+1 (20P)","list":"24000","sale":"20000","pic":"img/lg50.jpg"}]},{"brand":"렌즈그라피","name":"스윗서클 원데이 브라운","promo":"","g":"","maker":"렌즈그라피","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/lgsb.jpg","opts":[{"qty":"1팩 (10P)","list":"12000","sale":"12000","pic":"img/lgsb.jpg"},{"qty":"1+1 (20P)","list":"24000","sale":"20000","pic":"img/lgsb.jpg"}]},{"brand":"렌즈그라피","name":"스윗서클 원데이 그레이","promo":"","g":"","maker":"렌즈그라피","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/lg46.jpg","opts":[{"qty":"1팩 (10P)","list":"12000","sale":"12000","pic":"img/lg46.jpg"},{"qty":"1+1 (20P)","list":"24000","sale":"20000","pic":"img/lg46.jpg"}]},{"brand":"렌즈그라피","name":"스윗서클 원데이 초코","promo":"","g":"","maker":"렌즈그라피","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"원데이","cycLabel":"원데이","pic":"img/lg47.jpg","opts":[{"qty":"1팩 (10P)","list":"12000","sale":"12000","pic":"img/lg47.jpg"},{"qty":"1+1 (20P)","list":"24000","sale":"20000","pic":"img/lg47.jpg"}]},{"brand":"마이피픈","name":"라운G 픽싱 베이지","promo":"","g":"","maker":"마이피픈","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/mf4.jpg","opts":[{"qty":"1","list":"15000","sale":"15000","pic":"img/mf4.jpg"}]},{"brand":"마이피픈","name":"라운 픽싱 베이지","promo":"","g":"","maker":"마이피픈","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/mf1.jpg","opts":[{"qty":"1","list":"15000","sale":"15000","pic":"img/mf1.jpg"}]},{"brand":"마이피픈","name":"라운G 픽싱 카멜","promo":"","g":"","maker":"마이피픈","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/mf5.jpg","opts":[{"qty":"1","list":"15000","sale":"15000","pic":"img/mf5.jpg"}]},{"brand":"마이피픈","name":"라운 픽싱 카멜","promo":"","g":"","maker":"마이피픈","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/mf2.jpg","opts":[{"qty":"1","list":"15000","sale":"15000","pic":"img/mf2.jpg"}]},{"brand":"마이피픈","name":"라운G 픽싱 애쉬","promo":"","g":"","maker":"마이피픈","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/mf6.jpg","opts":[{"qty":"1","list":"15000","sale":"15000","pic":"img/mf6.jpg"}]},{"brand":"마이피픈","name":"라운 픽싱 애쉬","promo":"","g":"","maker":"마이피픈","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/mf3.jpg","opts":[{"qty":"1","list":"15000","sale":"15000","pic":"img/mf3.jpg"}]},{"brand":"마이피픈","name":"라운G 픽싱 코발트","promo":"","g":"","maker":"마이피픈","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/mf7.jpg","opts":[{"qty":"1","list":"15000","sale":"15000","pic":"img/mf7.jpg"}]},{"brand":"마이피픈","name":"라운 코발트","promo":"","g":"","maker":"마이피픈","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/mf22.jpg","opts":[{"qty":"1","list":"12500","sale":"12500","pic":"img/mf22.jpg"}]},{"brand":"마이피픈","name":"디크 원먼스 블랙","promo":"","g":"","maker":"마이피픈","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/mf8.jpg","opts":[{"qty":"2","list":"20000","sale":"20000","pic":"img/mf8.jpg"}]},{"brand":"마이피픈","name":"디크 그란데 원먼스 블랙","promo":"","g":"","maker":"마이피픈","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/mf9.jpg","opts":[{"qty":"2","list":"20000","sale":"20000","pic":"img/mf9.jpg"}]},{"brand":"마이피픈","name":"디크 벤티 원먼스 블랙","promo":"","g":"","maker":"마이피픈","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/mf10.jpg","opts":[{"qty":"2","list":"20000","sale":"20000","pic":"img/mf10.jpg"}]},{"brand":"마이피픈","name":"디크 원먼스 핑크브라운","promo":"","g":"","maker":"마이피픈","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/mf11.jpg","opts":[{"qty":"2","list":"20000","sale":"20000","pic":"img/mf11.jpg"}]},{"brand":"마이피픈","name":"디크 그란데 원먼스 핑크브라운","promo":"","g":"","maker":"마이피픈","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/mf12.jpg","opts":[{"qty":"2","list":"20000","sale":"20000","pic":"img/mf12.jpg"}]},{"brand":"마이피픈","name":"비그 15:06 원먼스 카카오","promo":"","g":"","maker":"마이피픈","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/mf13.jpg","opts":[{"qty":"2","list":"19000","sale":"19000","pic":"img/mf13.jpg"}]},{"brand":"마이피픈","name":"비그 15:06 원먼스 애쉬","promo":"","g":"","maker":"마이피픈","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/mf14.jpg","opts":[{"qty":"2","list":"19000","sale":"19000","pic":"img/mf14.jpg"}]},{"brand":"마이피픈","name":"비브 픽싱 원먼스 오트밀","promo":"","g":"","maker":"마이피픈","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/mf15.jpg","opts":[{"qty":"2","list":"25000","sale":"25000","pic":"img/mf15.jpg"}]},{"brand":"마이피픈","name":"비브 픽싱 원먼스 차콜","promo":"","g":"","maker":"마이피픈","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/mf16.jpg","opts":[{"qty":"2","list":"25000","sale":"25000","pic":"img/mf16.jpg"}]},{"brand":"마이피픈","name":"비브 그란데 픽싱 원먼스 데님","promo":"","g":"","maker":"마이피픈","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/mf17.jpg","opts":[{"qty":"2","list":"25000","sale":"25000","pic":"img/mf17.jpg"}]},{"brand":"마이피픈","name":"비브 그란데 픽싱 원먼스 토프블랙","promo":"","g":"","maker":"마이피픈","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/mf18.jpg","opts":[{"qty":"2","list":"25000","sale":"25000","pic":"img/mf18.jpg"}]},{"brand":"마이피픈","name":"비브 벤티 픽싱 원먼스 데님","promo":"","g":"","maker":"마이피픈","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/mf19.jpg","opts":[{"qty":"2","list":"25000","sale":"25000","pic":"img/mf19.jpg"}]},{"brand":"마이피픈","name":"비브 벤티 픽싱 원먼스 오트밀","promo":"","g":"","maker":"마이피픈","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/mf20.jpg","opts":[{"qty":"2","list":"25000","sale":"25000","pic":"img/mf20.jpg"}]},{"brand":"마이피픈","name":"비브 벤티 픽싱 원먼스 차콜","promo":"","g":"","maker":"마이피픈","color":true,"astig":false,"multi":false,"myopia":false,"cyc":"2주·한달","cycLabel":"한달용","pic":"img/mf21.jpg","opts":[{"qty":"2","list":"25000","sale":"25000","pic":"img/mf21.jpg"}]},{"brand":"미광","name":"클리어 원데이","promo":"","g":"","maker":"미광","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"원데이","cycLabel":"원데이","pic":"img/mk1.jpg","opts":[{"qty":"30","list":"24000","sale":"18000","pic":"img/mk1.jpg"},{"qty":"90","list":"62000","sale":"46000","pic":"img/mk2.jpg"}]},{"brand":"블루광학","name":"블렌 (장기 착용)","promo":"","g":"","maker":"블루광학","color":false,"astig":false,"multi":false,"myopia":true,"cyc":"장기·기타","cycLabel":"장기·기타","pic":"img/bl1.jpg","opts":[{"qty":"2","list":"100000","sale":"70000","pic":"img/bl1.jpg"}]},{"brand":"블루광학","name":"글로리아 토릭 (장기 착용)","promo":"","g":"","maker":"블루광학","color":false,"astig":true,"multi":false,"myopia":false,"cyc":"장기·기타","cycLabel":"장기·기타","pic":"img/bl2.jpg","opts":[{"qty":"2","list":"120000","sale":"80000","pic":"img/bl2.jpg"}]}]};
+var $=function(id){return document.getElementById(id)};
+var esc=function(t){return String(t==null?'':t).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+var amt=function(v){v=String(v||'').trim();return /^\d[\d,]*원?$/.test(v)?Number(v.replace(/[,원]/g,'')):null};
+var won=function(n){return n.toLocaleString('ko-KR')};
+var qlab=function(q){q=String(q||'');return /^\d+$/.test(q)?q+'P':q};
+var P=D.products;
+var F={use:'전체',cyc:'전체',brand:'전체',q:'',ev:null};
+var KEY='kvision-pickup-cart';
+var cart={};
+try{var saved=JSON.parse(localStorage.getItem(KEY)||'{}');Object.keys(saved).forEach(function(k){var a=k.split(':'),p=P[+a[0]];if(p&&p.opts[+a[1]]&&saved[k]>0)cart[k]=Math.min(20,saved[k]|0)})}catch(e){}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(cart))}catch(e){}}
+
+$('shop').textContent=D.shop+' 콘택트렌즈';
+$('foot').textContent=D.footer+' · '+D.month+' 가격 ('+D.version+')';
+
+/* ----- promotions, worked out per cart line (one product, one pack size) -----
+   A promo may hold several parts joined by " · "; a part starting with a pack size ("30P 3+1", "90P 1팩 구매 시 30P 증정") only counts for that pack.
+   3+1: pay for three of every four; 쿠퍼비젼 repeats, others once (4팩까지).
+   "90P 2팩 구매 시 30P 증정": two of that pack size bring one small pack of the same product, once (쿠퍼비젼 "90P 1팩 → 30P" repeats per pack);
+   네이버페이 2만원 is added where the promo says so.
+   "3팩 구매 시 1팩 증정": three packs bring one more of the same pack, once.
+   "앱 쿠폰" promos (바슈롬, 11월) need the customer's own coupon, so they are noted, not taken off the total. */
+function calc(pi,oi,q){
+  var p=P[pi],o=p.opts[oi],all=p.promo||'',unit=amt(o.sale),listU=amt(o.list);
+  if(unit==null)unit=listU;if(listU==null)listU=unit;
+  /* the free pack is counted inside the quantity: 4 boxes of a 3+1 cost 3; a gift pack the customer also puts in the cart costs 0 */
+  var r={q:q,paid:q,free:0,freeLabel:'',gifts:[],nudge:'',note:'',unit:unit,giftSize:null,giftText:'',giftN:0};
+  var m,pk=qlab(o.qty),pr='';
+  if(/앱 쿠폰/.test(all)){r.note='바슈롬 앱 쿠폰을 받아 오시면 매장에서 행사를 적용해 드려요';all=''}
+  all.split(/\s*·\s*/).forEach(function(sg){if(pr)return;var mm=/^(\d+P)\s/.exec(sg);if(mm&&mm[1]!==pk)return;if(/\d\s*\+\s*\d|증정/.test(sg)&&!/^네이버페이/.test(sg))pr=sg});
+  var npayAll=/네이버페이/.test(all);
+  if(/3\s*\+\s*1/.test(pr)){
+    var rep=p.brand==='쿠퍼비젼';
+    r.free=rep?Math.floor(q/4):(q>=4?1:0);
+    if(r.free)r.freeLabel='3+1 적용 · '+r.free+'팩 무료';
+    if(rep?q%4===3:q===3)r.nudge='1팩 더 담으면 1팩 무료예요';
+    if(!rep&&q>4)r.note='3+1은 4팩까지 1번만 적용돼요';
+  }else if((m=/(\d+P)\s*(\d+)팩 구매 시\s*(?:같은 제품\s*)?(\d+P)\s*(?:1팩\s*)?증정/.exec(pr))){
+    var npay=npayAll,n=+m[2];
+    if(qlab(o.qty)===m[1]){
+      if(m[1]===m[3]){
+        /* gift is the same pack (30P 2+1, 6P 3+1): the next pack after n is free */
+        if(q>=n+1){r.free=1;r.freeLabel=n+'+1 적용 · 1팩 무료';if(npay)r.gifts.push('네이버페이 2만원');if(q>n+1)r.note='증정은 1번만 적용돼요'}
+        else if(q===n)r.nudge='1팩 더 담으면 1팩 무료'+(npay?' + 네이버페이 2만원':'');
+      }else{
+        /* gift is a smaller pack of the same product (90P 2팩 → 30P 1팩) */
+        var each=p.brand==='쿠퍼비젼'&&n===1; /* 쿠퍼 멤버십: every 90P pack brings a 30P pack */
+        if(q>=n){r.giftSize=m[3];r.giftN=each?q:1;r.giftText=p.name+' '+m[3]+' '+r.giftN+'팩';r.gifts.push(r.giftText);if(npay)r.gifts.push('네이버페이 2만원');if(q>n&&!each)r.note='증정은 1번만 적용돼요'}
+        else if(q===n-1)r.nudge='1팩 더 담으면 '+m[3]+' 1팩'+(npay?' + 네이버페이 2만원':'')+' 증정';
+      }
+    }
+  }else if((m=/(\d+)팩 구매 시 1팩 증정/.exec(pr))){
+    var n2=+m[1];
+    if(q>=n2+1){r.free=1;r.freeLabel=n2+'+1 적용 · 1팩 무료';if(q>n2+1)r.note='증정은 1번만 적용돼요'}
+    else if(q===n2)r.nudge='1팩 더 담으면 1팩 무료';
+  }
+  r.paid=q-r.free;
+  r.pay=unit==null?null:r.paid*unit;
+  r.list=listU==null?null:q*listU;
+  return r;
+}
+function lines(){
+  var ls=Object.keys(cart).filter(function(k){return cart[k]>0}).map(function(k){var a=k.split(':'),pi=+a[0],oi=+a[1];return {k:k,pi:pi,oi:oi,p:P[pi],o:P[pi].opts[oi],c:calc(pi,oi,cart[k])}});
+  /* 90P 2팩 + the same product's 30P in the cart: that 30P pack is the gift, so one of it is free instead of a separate gift line */
+  ls.forEach(function(l){
+    if(!l.c.giftSize)return;
+    var g=ls.filter(function(x){return x!==l&&x.pi===l.pi&&qlab(x.o.qty)===l.c.giftSize})[0];
+    if(!g)return;
+    var k=Math.min(l.c.giftN||1,g.c.q-g.c.free);if(k<1)return;
+    var left=(l.c.giftN||1)-k,i=l.c.gifts.indexOf(l.c.giftText);
+    if(i>=0){if(left>0)l.c.gifts[i]=l.p.name+' '+l.c.giftSize+' '+left+'팩';else l.c.gifts.splice(i,1)}
+    g.c.free+=k;g.c.paid=g.c.q-g.c.free;g.c.pay=g.c.unit==null?null:g.c.paid*g.c.unit;
+    g.c.freeLabel=(g.c.freeLabel?g.c.freeLabel+' · ':'')+'증정 적용 · '+k+'팩 무료';
+  });
+  return ls;
+}
+function totals(ls){
+  var pay=0,list=0,box=0,ask=0,gifts=0;
+  ls.forEach(function(l){box+=l.c.q;gifts+=l.c.gifts.length;if(l.c.pay==null){ask++;return}pay+=l.c.pay;list+=l.c.list==null?l.c.pay:l.c.list});
+  return {pay:pay,list:list,off:list-pay,box:box,ask:ask,gifts:gifts};
+}
+
+/* ----- list ----- */
+function matches(p){
+  if(F.ev!==null){return evSet(D.events[F.ev]).indexOf(p)>=0}
+  if(F.use!=='전체'&&!(F.use==='근시'?p.myopia:F.use==='난시'?p.astig:F.use==='멀티포컬'?p.multi:p.color))return false;
+  if(F.cyc!=='전체'&&p.cyc!==F.cyc)return false;
+  if(F.brand!=='전체'&&p.brand!==F.brand)return false;
+  if(F.q){var t=(p.name+' '+p.brand+' '+p.maker+' '+p.promo).toLowerCase().replace(/\s/g,'');if(t.indexOf(F.q)<0)return false}
+  return true;
+}
+/* an event card shows the products it talks about: brands named in its title, narrowed to products whose promo shares its numbers */
+function evSet(e){
+  var t=e.title,txt=t+' '+e.text,bs=[];
+  P.forEach(function(p){if(bs.indexOf(p.brand)<0&&(t.indexOf(p.brand)>=0||(p.brand==='쿠퍼비젼'&&/쿠퍼/.test(t))))bs.push(p.brand)});
+  var tok=(txt.match(/\d+\s*\+\s*\d+|\d+팩|\d+P/g)||[]).map(function(x){return x.replace(/\s/g,'')});
+  var inB=P.filter(function(p){return !bs.length||bs.indexOf(p.brand)>=0});
+  var hit=inB.filter(function(p){var pr=String(p.promo||'').replace(/\s/g,'');return pr&&tok.some(function(k){return pr.indexOf(k)>=0})});
+  return hit.length?hit:(bs.length?inB:[]);
+}
+function ctl(k){
+  var q=cart[k]||0;
+  return q?'<span class="step"><button type="button" data-act="dec" data-k="'+k+'" aria-label="하나 빼기">−</button><output>'+q+'</output><button type="button" data-act="inc" data-k="'+k+'" aria-label="하나 더">+</button></span>'
+    :'<button type="button" class="add" data-act="inc" data-k="'+k+'">+ 담기</button>';
+}
+function card(p){
+  var pi=P.indexOf(p),has=p.opts.some(function(o,oi){return cart[pi+':'+oi]});
+  var chips=[p.cycLabel,p.color?'컬러':'투명',p.astig?'난시':'',p.multi?'멀티포컬':''].filter(Boolean).map(function(c){return '<span>'+esc(c)+'</span>'}).join('');
+  return '<article class="pc'+(has?' has':'')+'" data-pi="'+pi+'"><div class="pc-top"><div class="ph">'+(p.pic?'<img src="'+esc(p.pic)+'" alt="'+esc(p.name)+'" loading="lazy">':'<span>사진 준비 중</span>')+'</div>'+
+    '<div><div class="chips">'+chips+'</div><h3>'+esc(p.name)+'</h3>'+(p.maker&&p.maker!==p.brand?'<div class="mk">'+esc(p.maker)+'</div>':'')+'</div></div>'+
+    (p.promo?'<p class="promo">'+esc(p.promo)+'</p>':'')+
+    '<div class="opts">'+p.opts.map(function(o,oi){
+      var l=amt(o.list),s=amt(o.sale),off=l&&s!=null&&s<l?Math.round((1-s/l)*100):0,k=pi+':'+oi;
+      var price=s!=null?'<b>'+won(s)+'<small>원</small></b>':(o.sale?'<b>'+esc(o.sale)+'</b>':(l!=null?'<b>'+won(l)+'<small>원</small></b>':'<b>문의</b>'));
+      return '<div class="opt"><span class="q">'+esc(qlab(o.qty))+'</span><span class="pr">'+(off?'<s>'+won(l)+'원</s>':'')+price+(off?'<em>'+off+'% 할인</em>':'')+'</span><span class="ctl" data-c="'+k+'">'+ctl(k)+'</span></div>';
+    }).join('')+'</div></article>';
+}
+function chipRow(id,key,vals,counts){
+  $(id).innerHTML=vals.map(function(v){return '<button type="button" class="chip" data-act="f" data-key="'+key+'" data-v="'+esc(v)+'" aria-pressed="'+(F.ev===null&&F[key]===v)+'">'+esc(v)+(counts?'<small>'+counts[v]+'</small>':'')+'</button>'}).join('');
+}
+function renderList(){
+  var brands=[];P.forEach(function(p){if(brands.indexOf(p.brand)<0)brands.push(p.brand)});
+  var cnt={'전체':0};brands.forEach(function(b){cnt[b]=0});
+  P.forEach(function(p){var save=F.brand;F.brand='전체';if(F.ev===null&&matches(p)){cnt['전체']++;cnt[p.brand]++}F.brand=save});
+  chipRow('f-use','use',['전체','근시','난시','멀티포컬','컬러']);
+  chipRow('f-cyc','cyc',['전체','원데이','2주·한달','장기·기타']);
+  chipRow('f-brand','brand',['전체'].concat(brands),cnt);
+  $('evs').innerHTML=D.events.map(function(e,i){return '<button type="button" class="ev" data-act="ev" data-i="'+i+'" aria-pressed="'+(F.ev===i)+'"><b>'+esc(e.title)+'</b><span>'+esc(e.text)+'</span></button>'}).join('');
+  var shown=P.filter(matches);
+  $('sum').innerHTML='<span>'+(F.ev!==null?'행사 제품 · '+esc(D.events[F.ev].title):'제품 '+shown.length+'개')+'</span>'+(F.ev!==null||F.q||F.use!=='전체'||F.cyc!=='전체'||F.brand!=='전체'?'<button type="button" data-act="reset">전체 보기</button>':'');
+  $('list').innerHTML=shown.length?brands.map(function(b){var its=shown.filter(function(p){return p.brand===b});return its.length?'<section class="grp"><h2>'+esc(b)+'<small>'+its.length+'개</small></h2>'+its.map(card).join('')+'</section>':''}).join('')
+    :'<p class="empty">찾는 제품이 없어요. 다른 이름으로 찾거나 [전체 보기]를 눌러 주세요.</p>';
+}
+function refreshCart(changedKey){
+  persist();
+  if(changedKey){
+    var span=document.querySelector('[data-c="'+changedKey+'"]');if(span)span.innerHTML=ctl(changedKey);
+    var pi=changedKey.split(':')[0],art=document.querySelector('.pc[data-pi="'+pi+'"]');
+    if(art)art.classList.toggle('has',P[+pi].opts.some(function(o,oi){return cart[pi+':'+oi]}));
+  }
+  var ls=lines(),t=totals(ls);
+  $('cbar').hidden=!ls.length;
+  $('cb-n').textContent=ls.length;
+  $('cb-s').textContent='장바구니 · '+t.box+'팩'+(t.gifts?' (+증정)':'');
+  $('cb-t').textContent=won(t.pay)+'원'+(t.ask?' + 문의':'');
+  if(!$('cart').hidden)renderCart();
+}
+
+/* ----- cart sheet ----- */
+function renderCart(){
+  var ls=lines(),t=totals(ls);
+  if(!ls.length){$('cart-l').innerHTML='<p class="empty" style="margin:16px 0">장바구니가 비어 있어요.</p>';$('cart-f').innerHTML='<button type="button" class="cta" data-act="close">제품 고르러 가기</button>';return}
+  $('cart-l').innerHTML=ls.map(function(l){
+    var c=l.c,tags=c.gifts.map(function(g){return '<span class="tag gift">증정 · '+esc(g)+'</span>'}).join('')+
+      (c.freeLabel?'<span class="tag ok">'+esc(c.freeLabel)+'</span>':'')+(c.nudge?'<span class="tag nudge">'+esc(c.nudge)+'</span>':'')+(c.note?'<span class="tag nudge">'+esc(c.note)+'</span>':'');
+    return '<div class="ci"><div class="ph">'+(l.o.pic||l.p.pic?'<img src="'+esc(l.o.pic||l.p.pic)+'" alt="">':'')+'</div><div><div class="k">'+esc(l.p.brand)+' · '+esc(qlab(l.o.qty))+'</div><div class="nm">'+esc(l.p.name)+'</div>'+
+      '<div class="r">'+ctl(l.k)+'<span class="p">'+(c.list!=null&&c.pay!=null&&c.list>c.pay?'<s>'+won(c.list)+'원</s>':'')+'<b>'+(c.pay==null?'가격 문의':won(c.pay)+'원')+'</b></span></div></div>'+(tags?'<div class="note">'+tags+'</div>':'')+'</div>';
+  }).join('');
+  var newbie=D.events.filter(function(e){return /신규/.test(e.title)})[0];
+  $('cart-f').innerHTML='<div class="ln"><span>정상가 합계</span><span>'+won(t.list)+'원</span></div><div class="ln"><span>할인</span><b>−'+won(t.off)+'원</b></div>'+
+    '<div class="tot"><span>예상 결제 금액</span><b>'+won(t.pay)+'원</b></div>'+(t.ask?'<span class="small">가격 문의 제품은 매장에서 안내해 드려요.</span>':'')+
+    (newbie?'<span class="small">처음 오신 분 혜택('+esc(newbie.text)+')은 매장에서 확인 후 적용해 드려요.</span>':'')+
+    '<p class="notice" style="margin-top:6px">구매하실 때 <b>이 화면을 매장 직원에게 보여 주세요.</b> 재고와 행사는 매장에서 한 번 더 확인해 드려요.</p><button type="button" class="link" data-act="clear">장바구니 비우기</button>';
+}
+
+/* ----- open / close ----- */
+function show(which){
+  $('dim').hidden=which!=='cart';$('cart').hidden=which!=='cart';
+  document.body.style.overflow=which?'hidden':'';
+  if(which==='cart')renderCart();
+}
+
+document.addEventListener('click',function(e){
+  var el=e.target.closest('[data-act]');if(!el)return;
+  var a=el.dataset.act,k=el.dataset.k;
+  if(a==='inc'){cart[k]=Math.min(20,(cart[k]||0)+1);refreshCart(k)}
+  else if(a==='dec'){cart[k]=(cart[k]||0)-1;if(cart[k]<=0)delete cart[k];refreshCart(k)}
+  else if(a==='f'){F.ev=null;F[el.dataset.key]=el.dataset.v;renderList()}
+  else if(a==='ev'){var i=+el.dataset.i;F.ev=F.ev===i?null:i;renderList();var s=$('sum');if(s&&F.ev!==null)s.scrollIntoView({behavior:'smooth',block:'start'})}
+  else if(a==='reset'){F={use:'전체',cyc:'전체',brand:'전체',q:'',ev:null};$('q').value='';renderList()}
+  else if(a==='open-cart')show('cart');
+  else if(a==='close')show(null);
+  else if(a==='clear'){cart={};refreshCart();renderList();show(null)}
+});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('cart').hidden)show(null)});
+$('q').addEventListener('input',function(){F.ev=null;F.q=this.value.toLowerCase().replace(/\s/g,'');renderList()});
+
+renderList();refreshCart();
+})();
+</script>
